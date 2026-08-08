@@ -1,7 +1,7 @@
 import logging
 import subprocess
 from dataclasses import dataclass
-
+import time
 from tenacity import retry, stop_after_attempt, wait_fixed
 
 logger = logging.getLogger(__name__)
@@ -93,7 +93,7 @@ class ADBWrapper:
                     DeviceInfo(
                         serial=serial,
                         model=model,
-                        android_version="unkown",
+                        android_version="unknown",
                         state=state,
                     )
                 )
@@ -184,3 +184,34 @@ class ADBWrapper:
     def reboot_device(self, device_serial: str):
         """Reboot the device"""
         self.execute_command(device_serial, ["reboot"])
+
+    def is_fully_booted(self, serial: str) -> bool:
+        """Checks if Android OS package manager service is accessible."""
+        try:
+            # Check if sys.boot_completed is 1
+            boot = self.execute_command(serial, ["shell", "getprop", "sys.boot_completed"])
+            if boot.strip() != "1":
+                return False
+
+            # Check if package manager service is active
+            pm = self.execute_command(serial, ["shell", "pm", "path", "android"])
+            return "package:" in pm
+        except Exception as e:
+            logging.debug(f"[{serial}] Boot check attempt failed: {e}")
+            return False
+
+    def wait_for_boot(
+        self, serial: str, timeout: int = 60, poll_interval: int = 2
+    ) -> bool:
+        """Polls until the device reports fully booted or times out."""
+        logging.info(f"[{serial}] Checking framework readiness...")
+        start_time = time.time()
+
+        while time.time() - start_time < timeout:
+            if self.is_fully_booted(serial):
+                logging.info(f"[{serial}] Android framework is ready.")
+                return True
+            time.sleep(poll_interval)
+
+        logging.error(f"[{serial}] Timed out waiting for boot completion.")
+        return False

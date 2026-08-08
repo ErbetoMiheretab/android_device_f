@@ -1,0 +1,80 @@
+services:
+  android_1:
+    image: budtmo/docker-android:emulator_11.0
+    container_name: android_1
+    privileged: true
+    environment:
+      - DEVICE=Nexus 5
+      - APPIUM=false
+      - ENABLE_VNC=false
+    ports:
+      - "5555:5555"
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '2.0'
+
+  android_2:
+    image: budtmo/docker-android:emulator_11.0
+    container_name: android_2
+    privileged: true
+    environment:
+      - DEVICE=Nexus 5
+      - APPIUM=false
+      - ENABLE_VNC=false
+    ports:
+      - "5556:5555"
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '2.0'
+
+  android_3:
+    image: budtmo/docker-android:emulator_11.0
+    container_name: android_3
+    privileged: true
+    environment:
+      - DEVICE=Nexus 5
+      - APPIUM=false
+      - ENABLE_VNC=false
+    ports:
+      - "5557:5555"
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '2.0'
+
+  android_4:
+    image: budtmo/docker-android:emulator_11.0
+    container_name: android_4
+    privileged: true
+    environment:
+      - DEVICE=Nexus 5
+      - APPIUM=false
+      - ENABLE_VNC=false
+    ports:
+      - "5558:5555"
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '2.0'
+
+  android_5:
+    image: budtmo/docker-android:emulator_11.0
+    container_name: android_5
+    privileged: true
+    environment:
+      - DEVICE=Nexus 5
+      - APPIUM=false
+      - ENABLE_VNC=false
+    ports:
+      - "5559:5555"
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '2.0'
