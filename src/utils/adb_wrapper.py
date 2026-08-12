@@ -109,15 +109,16 @@ class ADBWrapper:
             return False
 
     def get_device_properties(self, device_serial: str) -> dict[str, str]:
-        """GEt device properties via getprop"""
+        """Get device properties via getprop"""
         try:
             output = self.execute_command(device_serial, ["shell", "getprop"])
 
             props = {}
             for line in output.split("\n"):
-                if ":" in line:
-                    k, v = line.split(";", 1)
-                    props[k.strip("[]")] = v.strip("[]")
+                # getprop format: [ro.product.model]: [Nexus 5]
+                if line.startswith("[") and "]: [" in line:
+                    k, _, v = line.partition("]: [")
+                    props[k.lstrip("[")] = v.rstrip("]")
             return props
         except Exception:
             return {}
